@@ -4,3 +4,6 @@
 [submodule "lib/fiat"]
 	path = lib/fiat
 	url = https://github.com/fiatdao/fiat
+[submodule "lib/delphi"]
+	path = lib/delphi
+	url = https://github.com/fiatdao/delphi
