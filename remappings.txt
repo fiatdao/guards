@@ -3,3 +3,4 @@ openzeppelin/=lib/fiat/lib/openzeppelin-contracts/
 prb-math/=lib/fiat/lib/prb-math/
 fiat/=lib/fiat/src/
 delphi/=lib/delphi/src/
+@openzeppelin/=lib/delphi/lib/openzeppelin-contracts/

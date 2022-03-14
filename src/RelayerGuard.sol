@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 pragma solidity ^0.8.4;
 
-import {IRelayer} from "delphi/relayer/IRelayer.sol";
+import {Relayer} from "delphi/relayer/Relayer.sol";
 import {Delayed} from "./Delayed.sol";
 import {BaseGuard} from "./BaseGuard.sol";
 
@@ -23,7 +23,7 @@ contract RelayerGuard is BaseGuard {
         uint256 delay,
         address relayer_
     ) BaseGuard(senatus, guardian, delay) {
-        relayer = Relayer(relayer_)
+        relayer = Relayer(relayer_);
     }
 
     /// @notice See `BaseGuard`
