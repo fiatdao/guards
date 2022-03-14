@@ -35,14 +35,14 @@ contract RelayerGuard is BaseGuard {
     /// @notice Allows for a trusted third party to trigger an Relayer execute.
     /// The execute will update all oracles and will push the data to Collybus.
     /// @dev Can only be called by the guardian. After `delay` has passed it can be `execute`'d.
-    /// @param keeperAddress
+    /// @param keeperAddress address of the keeper contract
     function setKeeperService(address keeperAddress) external isDelayed {
         relayer.allowCaller(Relayer.execute.selector, keeperAddress);
     }
 
     /// @notice Removes the permission to call execute on the Relayer.
     /// @dev Can only be called by the guardian. After `delay` has passed it can be `execute`'d.
-    /// @param keeperAddress
+    /// @param keeperAddress address of the keeper contract
     function unsetKeeperService(address keeperAddress) external isDelayed {
         relayer.blockCaller(Relayer.execute.selector, keeperAddress);
     }
