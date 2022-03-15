@@ -27,7 +27,7 @@ contract RelayerGuardTest is DSTest {
         // The type parameter is not important because the execute flow is identical for all types.
         relayer = new Relayer(address(collybus),IRelayer.RelayerType.DiscountRate);
 
-        relayerGuard = new RelayerGuard(address(this), address(this), 1, address(relayer));
+        relayerGuard = new RelayerGuard(address(this), address(this), 1);
         relayer.allowCaller(relayer.ANY_SIG(), address(relayerGuard));
     }
 
@@ -50,19 +50,20 @@ contract RelayerGuardTest is DSTest {
         return false;
     }
 
-    function test_isGuard() public {
-        relayerGuard.isGuard();
+    function test_isGuardForRelayer() public {
+        relayerGuard.isGuardForRelayer(address(relayer));
 
         relayer.blockCaller(relayer.ANY_SIG(), address(relayerGuard));
-        assertTrue(!can_call(address(relayerGuard), abi.encodeWithSelector(relayerGuard.isGuard.selector)));
+
+        assertTrue(!can_call(address(relayerGuard), abi.encodeWithSelector(relayerGuard.isGuardForRelayer.selector,address(relayer))));
     }
 
     function test_setKeeperService() public {
         assertTrue(
-            !can_call(address(relayerGuard), abi.encodeWithSelector(relayerGuard.setKeeperService.selector, address(1)))
+            !can_call(address(relayerGuard), abi.encodeWithSelector(relayerGuard.setKeeperService.selector, address(relayer), address(1)))
         );
 
-        bytes memory call = abi.encodeWithSelector(relayerGuard.setKeeperService.selector, address(1));
+        bytes memory call = abi.encodeWithSelector(relayerGuard.setKeeperService.selector, address(relayer), address(1));
         relayerGuard.schedule(call);
 
         assertTrue(
@@ -84,38 +85,18 @@ contract RelayerGuardTest is DSTest {
     }
 
     function test_unsetKeeperService() public {
-        bytes memory call_ = abi.encodeWithSelector(relayerGuard.setKeeperService.selector, address(1));
-        relayerGuard.schedule(call_);
-
-        hevm.warp(block.timestamp + relayerGuard.delay());
-        relayerGuard.execute(address(relayerGuard), call_, block.timestamp);
-        assertTrue(relayer.canCall(relayer.execute.selector, address(1)));
-
         assertTrue(
-            !can_call(
-                address(relayerGuard),
-                abi.encodeWithSelector(relayerGuard.unsetKeeperService.selector, address(1))
-            )
+            !can_call(address(relayerGuard), abi.encodeWithSelector(relayerGuard.setKeeperService.selector, address(relayer), address(1)))
         );
 
-        bytes memory call = abi.encodeWithSelector(relayerGuard.unsetKeeperService.selector, address(1));
+        bytes memory call = abi.encodeWithSelector(relayerGuard.setKeeperService.selector, address(relayer), address(1));
         relayerGuard.schedule(call);
-
-        assertTrue(
-            !can_call(
-                address(relayerGuard),
-                abi.encodeWithSelector(
-                    relayerGuard.execute.selector,
-                    address(relayerGuard),
-                    call,
-                    block.timestamp + relayerGuard.delay()
-                )
-            )
-        );
-
         hevm.warp(block.timestamp + relayerGuard.delay());
+
         relayerGuard.execute(address(relayerGuard), call, block.timestamp);
 
+        assertTrue(relayer.canCall(relayer.execute.selector, address(1)));
+        relayerGuard.unsetKeeperService(address(relayer), address(1));
         assertTrue(!relayer.canCall(relayer.execute.selector, address(1)));
     }
 }
