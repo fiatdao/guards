@@ -30,6 +30,7 @@ contract RelayerGuard is BaseGuard {
     /// @param relayer Address of the relayer.
     function isGuardForRelayer(address relayer) external view returns (bool) {
         if (!IGuarded(relayer).canCall(IGuarded(relayer).ANY_SIG(), address(this))) revert RelayerGuard__isGuardForRelayer_cantCall(relayer);
+        return true;
     }
 
     /// @notice Allows for a trusted third party to trigger an Relayer execute.
