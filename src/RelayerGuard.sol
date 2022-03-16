@@ -9,9 +9,6 @@ import {BaseGuard} from "./BaseGuard.sol";
 /// @title RelayerGuard
 /// @notice Contract which guards parameter updates for a `Relayer`
 contract RelayerGuard is BaseGuard {
-    /// ======== Custom Errors ======== ///
-    error RelayerGuard__isGuardForRelayer_cantCall(address relayer);
-    
     constructor(
         address senatus,
         address guardian,
@@ -24,21 +21,13 @@ contract RelayerGuard is BaseGuard {
         return true;
     }
 
-    /// @notice Method that checks if the Guard has sufficient rights over a relayer.
-    /// @param relayer Address of the relayer.
-    function isGuardForRelayer(address relayer) public view returns (bool) {
-        if (!IGuarded(relayer).canCall(IGuarded(relayer).ANY_SIG(), address(this))) revert RelayerGuard__isGuardForRelayer_cantCall(relayer);
-        return true;
-    }
-
     /// @notice Allows for a trusted third party to trigger an Relayer execute.
     /// The execute will update all oracles and will push the data to Collybus.
     /// @dev Can only be called by the guardian. After `delay` has passed it can be `execute`'d.
     /// @param relayer Address of the relayer that needs to whitelist the keeper
     /// @param keeperAddress Address of the keeper contract
     function setKeeperService(address relayer, address keeperAddress) external isDelayed {
-        if (isGuardForRelayer(relayer))
-            IGuarded(relayer).allowCaller(IRelayer.execute.selector, keeperAddress);
+        IGuarded(relayer).allowCaller(IRelayer.execute.selector, keeperAddress);
     }
 
     /// @notice Removes the permission to call execute on the Relayer.
@@ -46,7 +35,6 @@ contract RelayerGuard is BaseGuard {
     /// @param relayer Address of the relayer that needs to remove permissions for the keeper
     /// @param keeperAddress Address of the removed keeper contract
     function unsetKeeperService(address relayer, address keeperAddress) isGuardian external {
-        if (isGuardForRelayer(relayer))
-            IGuarded(relayer).blockCaller(IRelayer.execute.selector, keeperAddress);
+        IGuarded(relayer).blockCaller(IRelayer.execute.selector, keeperAddress);
     }
 }

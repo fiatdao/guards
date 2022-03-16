@@ -50,14 +50,6 @@ contract RelayerGuardTest is DSTest {
         return false;
     }
 
-    function test_isGuardForRelayer() public {
-        relayerGuard.isGuardForRelayer(address(relayer));
-
-        relayer.blockCaller(relayer.ANY_SIG(), address(relayerGuard));
-
-        assertTrue(!can_call(address(relayerGuard), abi.encodeWithSelector(relayerGuard.isGuardForRelayer.selector,address(relayer))));
-    }
-
     function test_setKeeperService() public {
         assertTrue(
             !can_call(address(relayerGuard), abi.encodeWithSelector(relayerGuard.setKeeperService.selector, address(relayer), address(1)))
