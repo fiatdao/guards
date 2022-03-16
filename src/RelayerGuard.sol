@@ -10,8 +10,6 @@ import {BaseGuard} from "./BaseGuard.sol";
 /// @notice Contract which guards parameter updates for a `Relayer`
 contract RelayerGuard is BaseGuard {
     /// ======== Custom Errors ======== ///
-    error RelayerGuard__setKeeperService_cantCall(address relayer);
-    error RelayerGuard__unsetKeeperService_cantCall(address relayer);
     error RelayerGuard__isGuardForRelayer_cantCall(address relayer);
     
     constructor(
@@ -44,8 +42,8 @@ contract RelayerGuard is BaseGuard {
     }
 
     /// @notice Removes the permission to call execute on the Relayer.
-    /// @param relayer Address of the relayer that needs to remove permissions for the keeper
     /// @dev Can only be called by the guardian.
+    /// @param relayer Address of the relayer that needs to remove permissions for the keeper
     /// @param keeperAddress Address of the removed keeper contract
     function unsetKeeperService(address relayer, address keeperAddress) isGuardian external {
         if (isGuardForRelayer(relayer))
