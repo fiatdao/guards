@@ -23,12 +23,12 @@ contract RelayerGuard is BaseGuard {
     /// ======== Storage ======== ///
     /// @notice See `BaseGuard`
     function isGuard() external view override returns (bool) {
-        return false;
+        return true;
     }
 
     /// @notice Method that checks if the Guard has sufficient rights over a relayer.
     /// @param relayer Address of the relayer.
-    function isGuardForRelayer(address relayer) external view returns (bool) {
+    function isGuardForRelayer(address relayer) public view returns (bool) {
         if (!IGuarded(relayer).canCall(IGuarded(relayer).ANY_SIG(), address(this))) revert RelayerGuard__isGuardForRelayer_cantCall(relayer);
         return true;
     }
@@ -39,9 +39,8 @@ contract RelayerGuard is BaseGuard {
     /// @param relayer Address of the relayer that needs to whitelist the keeper
     /// @param keeperAddress Address of the keeper contract
     function setKeeperService(address relayer, address keeperAddress) external isDelayed {
-        if (!IGuarded(relayer).canCall(IGuarded(relayer).ANY_SIG(), address(this))) revert RelayerGuard__setKeeperService_cantCall(relayer);
-
-        IGuarded(relayer).allowCaller(IRelayer.execute.selector, keeperAddress);
+        if (isGuardForRelayer(relayer))
+            IGuarded(relayer).allowCaller(IRelayer.execute.selector, keeperAddress);
     }
 
     /// @notice Removes the permission to call execute on the Relayer.
@@ -49,8 +48,7 @@ contract RelayerGuard is BaseGuard {
     /// @dev Can only be called by the guardian.
     /// @param keeperAddress Address of the removed keeper contract
     function unsetKeeperService(address relayer, address keeperAddress) isGuardian external {
-        if (!IGuarded(relayer).canCall(IGuarded(relayer).ANY_SIG(), address(this))) revert RelayerGuard__unsetKeeperService_cantCall(relayer);
-
-        IGuarded(relayer).blockCaller(IRelayer.execute.selector, keeperAddress);
+        if (isGuardForRelayer(relayer))
+            IGuarded(relayer).blockCaller(IRelayer.execute.selector, keeperAddress);
     }
 }
