@@ -74,6 +74,7 @@ contract RelayerGuardTest is DSTest {
         relayerGuard.execute(address(relayerGuard), call, block.timestamp);
 
         assertTrue(relayer.canCall(relayer.execute.selector, address(1)));
+        assertTrue(relayer.canCall(relayer.executeWithRevert.selector, address(1)));
     }
 
     function test_unsetKeeperService() public {
@@ -88,7 +89,9 @@ contract RelayerGuardTest is DSTest {
         relayerGuard.execute(address(relayerGuard), call, block.timestamp);
 
         assertTrue(relayer.canCall(relayer.execute.selector, address(1)));
+        assertTrue(relayer.canCall(relayer.executeWithRevert.selector, address(1)));
         relayerGuard.unsetKeeperService(address(relayer), address(1));
         assertTrue(!relayer.canCall(relayer.execute.selector, address(1)));
+        assertTrue(!relayer.canCall(relayer.executeWithRevert.selector, address(1)));
     }
 }

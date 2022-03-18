@@ -28,6 +28,7 @@ contract RelayerGuard is BaseGuard {
     /// @param keeperAddress Address of the keeper contract
     function setKeeperService(address relayer, address keeperAddress) external isDelayed {
         IGuarded(relayer).allowCaller(IRelayer.execute.selector, keeperAddress);
+        IGuarded(relayer).allowCaller(IRelayer.executeWithRevert.selector, keeperAddress);
     }
 
     /// @notice Removes the permission to call execute on the Relayer.
@@ -36,5 +37,6 @@ contract RelayerGuard is BaseGuard {
     /// @param keeperAddress Address of the removed keeper contract
     function unsetKeeperService(address relayer, address keeperAddress) isGuardian external {
         IGuarded(relayer).blockCaller(IRelayer.execute.selector, keeperAddress);
+        IGuarded(relayer).blockCaller(IRelayer.executeWithRevert.selector, keeperAddress);
     }
 }
