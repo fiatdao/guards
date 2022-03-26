@@ -171,5 +171,6 @@ contract AerGuardTest is DSTest {
 
         (address collateralAuction, , , ) = limes.vaults(address(1));
         assertEq(collateralAuction, address(1));
+        assertTrue(limes.canCall(limes.liquidated.selector, collateralAuction));
     }
 }

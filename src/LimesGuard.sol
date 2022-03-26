@@ -75,5 +75,6 @@ contract LimesGuard is BaseGuard {
     /// @param collateralAuction See. Limes
     function setCollateralAuction(address vault, address collateralAuction) external isDelayed {
         limes.setParam(vault, "collateralAuction", collateralAuction);
+        limes.allowCaller(limes.liquidated.selector, collateralAuction);
     }
 }
