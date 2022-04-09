@@ -177,14 +177,14 @@ contract AuctionGuardTest is DSTest {
 
     function test_setMaxAuctionDuration() public {
         auctionGuard.setMaxAuctionDuration(address(1), 3 hours);
-        auctionGuard.setMaxAuctionDuration(address(1), 5 days);
+        auctionGuard.setMaxAuctionDuration(address(1), 30 days);
         (, uint256 maxAuctionDuration, , , ) = collateralAuction.vaults(address(1));
-        assertEq(maxAuctionDuration, 5 days);
+        assertEq(maxAuctionDuration, 30 days);
 
         assertTrue(
             !can_call(
                 address(auctionGuard),
-                abi.encodeWithSelector(auctionGuard.setMaxAuctionDuration.selector, address(1), 5 days + 1)
+                abi.encodeWithSelector(auctionGuard.setMaxAuctionDuration.selector, address(1), 30 days + 1)
             )
         );
 
@@ -192,7 +192,7 @@ contract AuctionGuardTest is DSTest {
         assertTrue(
             !can_call(
                 address(auctionGuard),
-                abi.encodeWithSelector(auctionGuard.setMaxAuctionDuration.selector, address(1), 5 days)
+                abi.encodeWithSelector(auctionGuard.setMaxAuctionDuration.selector, address(1), 30 days)
             )
         );
     }

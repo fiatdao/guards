@@ -89,7 +89,7 @@ contract AuctionGuard is BaseGuard {
     /// @dev Can only be called by the guardian. Checks if the value is in the allowed range.
     /// @param maxAuctionDuration See. CollateralAuction
     function setMaxAuctionDuration(address vault, uint256 maxAuctionDuration) external isGuardian {
-        _inRange(maxAuctionDuration, 3 hours, 5 days);
+        _inRange(maxAuctionDuration, 3 hours, 30 days);
         collateralAuction.setParam(vault, "maxAuctionDuration", maxAuctionDuration);
         (, , , , IPriceCalculator calculator) = collateralAuction.vaults(vault);
         LinearDecrease(address(calculator)).setParam("duration", maxAuctionDuration);
