@@ -16,7 +16,7 @@ abstract contract BaseGuard is Delayed, IGuard {
     /// ======== Storage ======== ///
 
     /// @notice Address of the DAO
-    address public immutable senatus;
+    address public senatus;
     /// @notice Address of the guardian
     address public guardian;
 
@@ -47,6 +47,13 @@ abstract contract BaseGuard is Delayed, IGuard {
     /// @notice Callback method which allows Guard to check if he has sufficient rights over the corresponding contract
     /// @return bool True if he has sufficient rights
     function isGuard() external view virtual override returns (bool);
+
+    /// @notice Updates the address of senatus
+    /// @dev Can only be called by Senatus
+    /// @param senatus_ Address of the new senatus
+    function setSenatus(address senatus_) external isSenatus {
+        senatus = senatus_;
+    }
 
     /// @notice Updates the address of the guardian
     /// @dev Can only be called by Senatus

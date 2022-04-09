@@ -43,6 +43,10 @@ contract NotSenatus {
         testGuard = testGuard_;
     }
 
+    function setSenatus(address senatus) external {
+        testGuard.setSenatus(senatus);
+    }
+
     function setGuardian(address guardian) external {
         testGuard.setGuardian(guardian);
     }
@@ -80,6 +84,15 @@ contract BaseGuardTest is DSTest {
         ok = abi.decode(success, (bool));
         if (ok) return true;
         return false;
+    }
+
+    function test_setSenatus() public {
+        testGuard.setSenatus(address(1));
+
+        assertEq(testGuard.senatus(), address(1));
+
+        NotSenatus notSenatus = new NotSenatus(testGuard);
+        assertTrue(!can_call(address(notSenatus), abi.encodeWithSelector(notSenatus.setSenatus.selector, address(1))));
     }
 
     function test_setGuardian() public {
