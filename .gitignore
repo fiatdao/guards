@@ -7,7 +7,10 @@ node_modules
 # Dapptools
 .cache/
 out/
+
+# Secrets
 .env
+.secrets
 
 # Ganache
 .db/
@@ -15,3 +18,9 @@ out/
 
 # Seth
 .sethrc
+
+# Gas snapshot
+.gas-snapshot
+
+# Foundry
+cache/
